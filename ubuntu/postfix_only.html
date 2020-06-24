@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n6').addClass('active');
+        $('#n63').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Ubuntu 16.04 - How To Use Postfix To Send Mails (System Users)</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Working Condetions</h4>
+          <p>/etc/hostname contained "example.com"</p>
+          <p>/etc/mailname contained "example.com"</p>
+          <p>/etc/hosts contained line "127.0.0.1 mail.example.com mail"</p>
+          <p>mail.example.com MX record was pointing to linux server ip address</p>
+          <p>Linux username is must for sending mail.</p>
+          <p>Configure the /etc/postfix/main.cf file with the content given here.</p>
+          <p>root@example:~# postfix reload</p>
+          <p>execute the above command after every change in /etc/postfix/main.cf</p>
+          <p>sudo ufw allow Postfix</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Setting mail path in the environment variable</h4>
+          <p>echo 'export MAIL=~/Maildir' | sudo tee -a /etc/bash.bashrc | sudo tee -a /etc/profile.d/mail.sh</p>
+          <p>source /etc/profile.d/mail.sh</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Installing mail client s-nail</h4>
+          <p>sudo apt-get install s-nail</p>
+          <p>sudo nano /etc/s-nail.rc</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Sending Mail</h4>
+          <p>root@example:~# echo 'init' | mail -s 'init' -Snorecord &ltusername></p>
+          <p>Above command will generate the initial mail folders required.</p>
+          <p>&ltusername>@example:~$ echo "test" | mail -s "test" -r "from@mail.com" "to@mail.com"</p>
+          <p>above command will send mail with subject test</p>
+          <p>myorigin, relayhost, home_mailbox, inet_protocols are important for sending mail</p>
+          <p>instead of mail enter s-nail while sending mail in ubuntu 18.04</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Receiving Mail</h4>
+          <p>edit /etc/postfix/virtual file and add one or more lines like below</p>
+          <p>admin@example.com &ltusername></p>
+          <p>mail sent to the above mails are stored in corresponding username directory.</p>
+          <p>&ltusername>@example:~$ sudo postmap /etc/postfix/virtual</p>
+          <p>above command will generate the Berkeley DB</p>
+          <p>mydestination, mynetworks, relay_domains, virtual_alias_maps are important for receiving mail</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Others</h3>
+          <p>sudo postconf -d mail_version</p>
+          <p>hostname --fqdn</p>
+          <p>hostname</p>
+          <p>hostname new_hostname</p>
+          <p>sudo dig MX example.com</p>
+        </div>
+      </div>
+      
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/main.cf</h4>
+      <textarea rows="40" class="form-control">
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+
+mydomain = honeyweb.org
+myhostname = mail.honeyweb.org
+myorigin = $mydomain
+mydestination = $mydomain $myhostname localhost.$mydomain localhost
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+relay_domains = 
+relayhost = 
+alias_maps = hash:/etc/aliases
+virtual_alias_maps= hash:/etc/postfix/virtual
+
+home_mailbox = Maildir/
+mailbox_command = 
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = ipv4
+
+compatibility_level=2
+      </textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/s-nail.rc (add these three lines in the end)</h4>
+          <textarea rows="4" class="form-control">. . .
+set emptystart
+set folder=Maildir
+set record=+sent</textarea>
+        </div>
+      </div>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n5').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Laravel 5.5 Short Notes</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th width="50%">Terminal Commands</th>
+            <th width="50%">explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>composer create-project --prefer-dist laravel/laravel blog "5.5.*"</td>
+            <td>Creates project structure and installs vendor files</td>
+          </tr>
+          <tr>
+            <td>php artisan key:generate</td>
+            <td>generates app key for the project in .env file</td>
+          </tr>
+          <tr>
+            <td>php artisan config:cache</td>
+            <td>boosts speed</td>
+          </tr>
+          <tr>
+            <td>php artisan down</td>
+            <td>enables maintainance mode - raises warning to user</td>
+          </tr>
+          <tr>
+            <td>php artisan up</td>
+            <td>disables maintainance mode</td>
+          </tr>
+          <tr>
+            <td>php artisan storage:link</td>
+            <td>links storage/app/public and public/storage directories</td>
+          </tr>
+          <tr>
+            <td>php artisan list make</td>
+            <td>lists the available make(folder and base code scafolding) commands</td>
+          </tr>
+          <tr>
+            <td>php artisan make:[cmd]</td>
+            <td>where cmd = [auth, command, controller, event, exception, factory, job, listener, mail, middleware, migration, model, notification, policy, provider, request, resource, rule, seeder, test]</td>
+          </tr>
+          <tr>
+            <td>php artisan event:generate</td>
+            <td>creates scafolding for both event and listener</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th width="50%">Routing</th>
+            <th width="50%">explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>/routes/web.php</td>
+            <td>routes defined in web.php file are session based. csrf_token is required for post, put & delete</td>
+          </tr>
+          <tr>
+            <td>/routes/api.php</td>
+            <td>routes are stateless and starts with api i.e., https://domain.tld/api/[your route here]. so no need to mention api in the routes seperately</td>
+          </tr>
+          <tr>
+            <td>Route::get($uri, $callback);</td>
+            <td>other methods are post, put, patch, delete, option</td>
+          </tr>
+          <tr>
+            <td>Route::match(['get', 'post'], $callback);</td>
+            <td>route is called for both get and post verbs</td>
+          </tr>
+          <tr>
+            <td>Route::any($uri, $callback);</td>
+            <td>route is called for any http verb</td>
+          </tr>
+          <tr>
+            <td>Route::redirect('/here', '/there', 301);</td>
+            <td>redirects route from /here to /there 301 is the redirect code</td>
+          </tr>
+          <tr>
+            <td>Route::view('/welcome', 'welcome', ['name' => 'Taylor']);</td>
+            <td>route for just displaying view with or without direct constant.</td>
+          </tr>
+          <tr>
+            <td>Route::get('/home/{param}/{option_param?}', $callback);</td>
+            <td>here shows how to write routing parameter and optional routing parameter</td>
+          </tr>
+          <tr>
+            <td>Route::get('user/{id}/{name}', $callback)->where(['id' => '[0-9]+', 'name' => '[a-z]+']);</td>
+            <td>puting regex constraints on routing parameters</td>
+          </tr>
+          <tr>
+            <td>Route::pattern('id', '[0-9]+');</td>
+            <td>this should be put in routing service provider class to impose global contraints on id parameter</td>
+          </tr>
+          <tr>
+            <td>Route::get($uri, $callback)->name('profile');</td>
+            <td>this is how to name a route</td>
+          </tr>
+          <tr>
+            <td>$url = route('profile', ['id' => 1]);</td>
+            <td>getting route url with parameter value passed</td>
+          </tr>
+          <tr>
+            <td>return redirect()->route('profile');</td>
+            <td>redirecting to named route</td>
+          </tr>
+          <tr>
+            <td>$request->route()->named('profile')</td>
+            <td>return true/false to test if request has come from the named route</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>
