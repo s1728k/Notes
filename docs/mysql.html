@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n3').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">MySql Commands</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>mysqldump -u root -p database_name > database_name.sql</td>
+            <td>exports the database into query sheet</td>
+          </tr>
+          <tr>
+            <td>mysql -u root -p database_name < database_name.sql</td>
+            <td>imports the database queries into existing database</td>
+          </tr>
+          <tr>
+            <td>show databases;</td>
+            <td>lists all databases.</td>
+          </tr>
+          <tr>
+            <td>create database database_name;</td>
+            <td>creates new database.</td>
+          </tr>
+          <tr>
+            <td>use database_name;</td>
+            <td>selects database.</td>
+          </tr>
+          <tr>
+            <td>select user, host from mysql.user;</td>
+            <td>lists the users @ hostname in mysql account</td>
+          </tr>
+          <tr>
+            <td>create user 'user_name'@'localhost' identified BY 'password';</td>
+            <td>creates the user 'user_name' in mysql account</td>
+          </tr>
+          <tr>
+            <td>alter user 'user_name'@'localhost' identified BY 'password';</td>
+            <td>changes the password for the user 'user_name' in mysql account</td>
+          </tr>
+          <tr>
+            <td>drop user 'user_name'@'localhost';</td>
+            <td>deletes the user 'user_name' in mysql account</td>
+          </tr>
+          <tr>
+            <td>grant all privileges on database_name.* to 'user_name'@'localhost';</td>
+            <td>gives all permissions to user on database.</td>
+          </tr>
+          <tr>
+            <td>flush privileges;</td>
+            <td>execute this after granting permission to user on database.</td>
+          </tr>
+          <tr>
+            <td>show tables;</td>
+            <td>lists all tables in selected database.</td>
+          </tr>
+          <!-- var filename = fullPath.replace(/^.*[\\\/]/, '') -->
+        </tbody>
+      </table>
+    </div>
+  </div><hr>
+  php artisan config:clear
+</div>
+</body>
+</html>

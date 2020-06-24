@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n6').addClass('active');
+        $('#n65').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Ubuntu 16.04 Configure Postfix and Dovecot for RoundCube (Virtual Users)</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Installing Dovecot</h4>
+          <p>sudo apt-get install dovecot-imapd dovecot-pop3d</p>
+          <p>configure 3 files as shown right hand side</p>
+          <p>after every change in dovecot files execute - dovecot reload</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Mail Location</h4>
+          <p>There are two paths to be understood.</p>
+          <p>path of files with system usernames as file names, where incoming mails are stored by postfix - /var/mail</p>
+          <p>path where outgoing mails are stored by mail client (s-nail/roundcube) and incoming mails are stored by postfix.</p>
+          <p>
+            <table class="table">
+                <tr>
+                  <th>users</th>
+                  <td colspan="2">System Users</td>
+                  <td colspan="2">Virtual Users</td>
+                </tr>
+                <tr>
+                  <th>Mail Location</th>
+                  <td colspan="2">home/[username]/Maildir</td>
+                  <td colspan="2">/var/mail/vmail/[domain_name]/[virtual_user]/Maildir</td>
+                </tr>
+                <tr>
+                  <th>Base Path</th>
+                  <td colspan="2">home/[username]</td>
+                  <td colspan="2">/var/mail/vmail/[domain_name]/[virtual_user]</td>
+                </tr>
+                <tr>
+                  <th>Trailing Path</th>
+                  <td colspan="2">~/Maildir</td>
+                  <td colspan="2">~/Maildir</td>
+                </tr>
+                <tr>
+                  <th>Mail Type</th>
+                  <td>incoming</td>
+                  <td>outgoing</td>
+                  <td>incoming</td>
+                  <td>outgoing</td>
+                </tr>
+                <tr>
+                  <th>Base Path Set in </th>
+                  <td>/etc/passwd</td>
+                  <td>/etc/passwd</td>
+                  <td>/etc/postfix/main.cf</td>
+                  <td>/etc/dovecot/users</td>
+                </tr>
+                <tr>
+                  <th>Base Path conf </th>
+                  <td>password db standard</td>
+                  <td>password db standard</td>
+                  <td>virtual_mailbox_base = /var/mail/vmail</td>
+                  <td>password db standard</td>
+                </tr>
+                <tr>
+                  <th>Trailing Path Set in </th>
+                  <td>/etc/postfix/main.cf</td>
+                  <td>/etc/profile.d/mail.sh</td>
+                  <td>/etc/postfix/main.cf</td>
+                  <td>/etc/dovecot/conf.d/10-mail.conf</td>
+                </tr>
+                <tr>
+                  <th>Trailing Path conf </th>
+                  <td>home_mailbox = Maildir/</td>
+                  <td>export MAIL=~/Maildir</td>
+                  <td>virtual_mailbox_maps = hash:/etc/postfix/vmailbox</td>
+                  <td>mail_location = maildir:~/Maildir</td>
+                </tr>
+                <tr>
+                  <th>Path generator / Mail storer</th>
+                  <td>postfix</td>
+                  <td>s-nail</td>
+                  <td>postfix</td>
+                  <td>roundcube</td>
+                </tr>
+            </table>
+          </p>
+          <p>Note:- </p>
+          <p>1. base path and traling mail path should be set in two places one for postfix use and other for mail client use. postfix will use this for incoming mails storing. mail client will use this for reading mails and storing outgoing mails. mail folder structure is generated by either postfix of mail client based whether incoming mail or outgoing mail comes first.</p>
+          <p>2. /etc/passwd file is not required to update manually. it will be filled with when you generate system user</p>
+          <p>3. leading / is important after Maildir. otherwise mail directories will not be created.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Passdb and Userdb</h4>
+          <p>passdb is the database that stores usernames and password</p>
+          <p>userdb is the database that stores uid, gid and mail base path to read mails</p>
+          <p>there are many standards for databases one such is passwd-file which stores both passdb and userdb info.</p>
+          <p>the file /etc/dovecot/users in the right side follows passwd-file standard.</p>
+          <p>pam standard is used for storing system user passwords.</p>
+          <p>dovecot authentication check any number of passdb so you can have both pam passdb for system users and passwd-file db for virtual users at a time.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/main.cf (additional to other configurations)</h4>
+      <textarea rows="9" class="form-control">
+mydestination = example1.com example2.com example3.com example4.com
+virtual_mailbox_base = /var/mail/vmail
+virtual_mailbox_maps = hash:/etc/postfix/vmailbox
+virtual_minimum_uid = 100
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+virtual_alias_maps= hash:/etc/postfix/virtual
+local_transport = virtual
+local_recipient_maps = $virtual_mailbox_maps</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/virtual</h4>
+      <textarea rows="1" class="form-control">
+postmaster@example.com postmaster</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/vmailbox</h4>
+      <textarea rows="3" class="form-control">
+virtual_user1@example.com  example.com/virtual_user1/Maildir/
+virtual_user2@example.com  example.com/virtual_user2/Maildir/
+virtual_user1@example1.com  example1.com/virtual_user1/Maildir/</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/conf.d/10-mail.conf (other options as per your requirement)</h4>
+      <textarea rows="1" class="form-control">
+mail_location = maildir:~/Maildir</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/conf.d/10-auth.conf (other options as per your requirement)</h4>
+      <textarea rows="1" class="form-control">
+!include auth-passwdfile.conf.ext</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/conf.d/auth-passwdfile.conf.ext (other options as per your requirement)</h4>
+      <textarea rows="8" class="form-control">
+passdb{
+  driver = passwd-file
+  args = scheme=CRYPT username_format=%u /etc/dovecot/users
+}
+userdb{
+  driver = passwd-file
+  args = username_format=%u /etc/dovecot/users
+}</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/users</h4>
+      <textarea rows="3" class="form-control">
+virtual_user1@example.com:{PLAIN}password:5000:5000::/var/mail/vmail/example.com/virtual_user1
+virtual_user2@example.com:{PLAIN}password:5000:5000::/var/mail/vmail/example.com/virtual_user2
+virtual_user1@example1.com:{PLAIN}password:5000:5000::/var/mail/vmail/example1.com/virtual_user1</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Create mail group (vmail)</h4>
+      <textarea rows="4" class="form-control">
+groupadd -g 5000 vmail
+useradd -m -u 5000 -g 5000 -s /bin/bash vmail
+mkdir /var/mail/vmail
+chown vmail:vmail /var/mail/vmail</textarea>
+        </div>
+      </div>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>

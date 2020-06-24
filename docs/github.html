@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n4').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Github Terminal Commands</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>git config --global user.name "Mona Lisa"</td>
+            <td>configures the git user name globaly for all projects</td>
+          </tr>
+          <tr>
+            <td>git config user.name "Mona Lisa"</td>
+            <td>configures the git user name for single project</td>
+          </tr>
+          <tr>
+            <td>git config --global user.name / git config user.name</td>
+            <td>retrives the configured global or local variable value</td>
+          </tr>
+          <tr>
+            <td>git init</td>
+            <td>initializes new git local repository inside new root project folder</td>
+          </tr>
+          <tr>
+            <td>git clone https://github.com/username/repository_name.git</td>
+            <td>clones(downloads) remote repository into local drive/folder wit git origin url</td>
+          </tr>
+          <tr>
+            <td>git add .</td>
+            <td>adds all the files and folders into git local repository</td>
+          </tr>
+          <tr>
+            <td>git commit -m "commit message"</td>
+            <td>commits all the files and folders to compare with git local repository</td>
+          </tr>
+          <tr>
+            <td>git push (git push -u origin master)</td>
+            <td>pushes the changes to remote git repository at origin url and master branch</td>
+          </tr>
+          <tr>
+            <td>git pull</td>
+            <td>pulls the changes from remote git repository to local repository</td>
+          </tr>
+          <tr>
+            <td>git branch</td>
+            <td>lists the available branch names and points at current branch name</td>
+          </tr>
+          <tr>
+            <td>git branch [branch]</td>
+            <td>creates the branch named [branch]</td>
+          </tr>
+          <tr>
+            <td>git checkout [branch] / git checkout -b [branch]</td>
+            <td>switches the branch. here -b is optional for creating new branch</td>
+          </tr>
+          <tr>
+            <td>git checkout [branch] [remote]/[branch] / git checkout --track [remote]/[branch]</td>
+            <td>switches the branch (remote is required when more than one remote is available)</td>
+          </tr>
+          <tr>
+            <td>git merge [branch]</td>
+            <td>merges the [branch] with current active branch</td>
+          </tr>
+          <tr>
+            <td>git branch -d [branch]</td>
+            <td>deletes the branch with name [branch]</td>
+          </tr>
+          <tr>
+            <td>git remote -v</td>
+            <td><p>Outputs:</p>
+<textarea rows="4" class="form-control">origin https://github.com/username/repository_name.git (fetch)
+origin https://github.com/username/repository_name.git (push)
+origin1 https://github.com/username/repository_name.git (fetch)
+origin1 https://github.com/username/repository_name.git (push)</textarea></td>
+          </tr>
+          <tr>
+            <td>git remote set-url [origin] https://github.com/username/repository_name.git</td>
+            <td>updates the git remote variable [origin] url in the local repository to new git url.</td>
+          </tr>
+          <tr>
+            <td>git remote add [origin] https://github.com/username/repository_name.git</td>
+            <td>adds the git remote origin and its url value</td>
+          </tr>
+          <tr>
+            <td>git remote rename [current-name] [new-name]</td>
+            <td>renames git remote variable origin from origin to origin1 etc in the local repository</td>
+          </tr>
+          <tr>
+            <td>git remote rm [origin]</td>
+            <td>removes the git url origin and its url value</td>
+          </tr>
+          <tr>
+            <td>git remote show [origin]</td>
+            <td><p>Outputs: (typical)</p>
+<textarea rows="16" class="form-control">* remote origin
+  Fetch URL: https://github.com/username/repository_name.git
+  Push  URL: https://github.com/username/repository_name.git
+  HEAD branch: master
+  Remote branches:
+    b1     tracked
+    b2     tracked
+    master tracked
+  Local branches configured for 'git pull':
+    b1     merges with remote b1
+    b2     merges with remote b2
+    master merges with remote master
+  Local refs configured for 'git push':
+    b1     pushes to b1     (up to date)
+    b2     pushes to b2     (up to date)
+    master pushes to master (fast-forwardable)</textarea></td>
+          </tr>
+          <tr>
+            <td colspan="2">Note:- switching between remotes will happen automatically when push or pull is done.</td>
+          </tr>
+          <tr>
+            <td>git reset --hard HEAD~</td>
+            <td>undo's the previous merge</td>
+          </tr>
+          <tr>
+            <td>git rebase master</td>
+            <td>while you are on active branch other than master, you can resolve the conflicts in your branch before merging into master by rebase command</td>
+          </tr>
+          <tr>
+            <td>git rebase --continue</td>
+            <td>after resolving the conflict in fist file use this command to continue for next</td>
+          </tr>
+          <tr>
+            <td>git rebase --skip</td>
+            <td>after resolving the conflict in fist file use this command to skip for next</td>
+          </tr>
+          <tr>
+            <td>git rebase --abort</td>
+            <td>after resolving the conflict in fist file use this command to abort rebase action</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>

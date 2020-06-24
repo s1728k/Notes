@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n6').addClass('active');
+        $('#n61').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Ubuntu 16.04 First Time Server Installation</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Credentials</h4>
+      <p>IP:- 93.188.163.102</p>
+      <p>root password:- hareramaharekrishna</p>
+      <p>mysql root password:- Krishna@1</p>
+    </div>
+    <div class="col-md-4">
+      <h4>Step 1 - create user name</h4>
+      <p>adduser &ltusername></p>
+      <p>usermod -aG sudo &ltusername></p>
+      <p>sudo su - &ltusername></p>
+      <p>su - to return back to root</p>
+    </div>
+    <div class="col-md-4">
+      <h4>Step 2 - Installing Apache Web Server</h4>
+      <p>sudo apt-get update</p>
+      <p>sudo apt-get upgrade</p>
+      <p>sudo apt-get install apache2</p>
+      <p>sudo systemctl status apache2</p>
+      <p>run http://93.188.163.102</p>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Step 3 - Installing UFW (Ubuntu Fire Wall)</h4>
+      <p>sudo apt-get install ufw</p>
+      <p>sudo nano /etc/default/ufw</p>
+      <p>IPV6=yes</p>
+      <p>sudo ufw default deny incoming</p>
+      <p>sudo ufw default allow outgoing</p>
+      <p>sudo ufw enable</p>
+      <p>sudo ufw allow http</p>
+      <p>sudo ufw allow https</p>
+      <p>sudo ufw allow 6000:6007/tcp</p>
+      <p>sudo ufw allow 6000:6007/udp</p>
+      <p>sudo ufw allow from 103.108.0.0/16</p>
+    </div>
+    <div class="col-md-4">
+      <h4>Step 4 - Install MySql</h4>
+      <p>sudo apt-get install mysql-server</p>
+      <p>give password Krishna@1</p>
+      <p>sudo systemctl status mysql</p>
+      <p>mysql -u root -p</p>
+      <p>Enter Password: Krishna@1</p>
+      <p>mysql > CREATE DATABASE database_name;</p>
+      <p>mysql > GRANT SELECT ON database_name.* TO 'username'@'127.0.0.1' IDENTIFIED BY 'password';</p>
+      <p>mysql > FLUSH PRIVILEGES;</p>
+
+    </div>
+    <div class="col-md-4">
+      <h4>Step 5 - Installing PHP 7.0</h4>
+      <p>sudo apt-get update</p>
+      <p>sudo apt-get upgrade</p>
+      <p>sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql php-cgi php-curl php-json php-mbstring php-gettext</p>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Step 6 - Installing git</h4>
+      <p>sudo apt-get update</p>
+      <p>sudo apt-get install git</p>
+      <p>git config --global user.name "Your Name"</p>
+      <p>git config --global user.email "youremail@domain.com"</p>
+    </div>
+    <div class="col-md-4">
+      <h4>Step 7 - Install Composer</h4>
+      <p>sudo apt-get update</p>
+      <p>sudo apt-get install curl</p>
+      <p>sudo curl -s https://getcomposer.org/installer | php</p>
+      <p>sudo mv composer.phar /usr/local/bin/composer</p>
+    </div>
+    <div class="col-md-4">
+      <h4>Step 8 - Install phpMyAdmin</h4>
+      <p>sudo apt-get update</p>
+      <p>sudo apt-get install phpmyadmin php-mbstring php-gettext</p>
+      <p>/etc/apache2/conf-enabled/</p>
+      <p>sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf</p>
+      <p>sudo a2enconf phpmyadmin.conf</p>
+      <p>sudo systemctl reload apache2.service</p>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Notes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span> 
+        </button>
+        <a href="/"><svg height="45" width="250">
+            <text x="0" y="28" fill="grey" style="font-size:27px; font-weight:bold; font-family:Arial, Helvetica, sans-serif">Notes</text>
+            <text x="0" y="42" fill="lightgrey" style="font-size:9px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; letter-spacing: .38rem;">------------</text>
+          Notes
+        </svg></a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+    </div>
+  </div>
+</nav>
+<script>
+  (function(){
+    $.get('/nav.html',function(data,status){
+      if(status=='success'){
+        $('#myNavbar').prepend(data);
+        $('#n6').addClass('active');
+        $('#n66').addClass('active');
+      }
+    })
+  })();
+</script>
+<div style="height: 7vh"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-center">Ubuntu 16.04 Postfix and Dovecot with MySQL (Virtual Users)</h3>
+    </div>
+  </div><hr>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Installing MySQL plugin for postfix and dovecot</h4>
+          <p>sudo apt-get install dovecot-mysql postfix-mysql</p>
+          <p>create database and tables for virtual users and virtual domains</p>
+          <p>virtual users table should contain fields for password and username</p>
+          <p>virtual domains table should contain fields for domain name</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Typical Virtual Users Table</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>domain_id</th>
+                <th>virtual_user_field_name</th>
+                <th>password_field_name</th>
+                <th>maildir_path_field_name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>admin@example.com</td>
+                <td>{PLAIN}password</td>
+                <td>/var/mail/vmail/example.com/admin</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>support@example.com</td>
+                <td>{SSHA}IEe1F/FZ...</td>
+                <td>/var/mail/vmail/example.com/support</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>1</td>
+                <td>sales@example.com</td>
+                <td>{MD5}fjldsjfew...</td>
+                <td>/var/mail/vmail/example.com/sales</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Typical Virtual Domains Table</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>virtual_domain_field_name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>example.com</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>example1.com</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>example2.com</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/main.cf (additional to other configurations)</h4>
+      <textarea rows="8" class="form-control">
+mydestination = proxy:mysql:/etc/postfix/mysql-domains.cf
+virtual_mailbox_base = /var/mail/vmail
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/mysql-mailbox.cf
+virtual_minimum_uid = 100
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+local_transport = virtual
+local_recipient_maps = $virtual_mailbox_maps</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/mysql-domains.cf</h4>
+      <textarea rows="5" class="form-control">
+host = 127.0.0.1
+user = db_user_name
+password = db_user_password
+dbname = db_name
+query = SELECT 1 FROM virtual_domains_table_name WHERE domain_field_name='%s'</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/postfix/mysql-mailbox.cf</h4>
+      <textarea rows="5" class="form-control">
+host = 127.0.0.1
+user = db_user_name
+password = db_user_password
+dbname = db_name
+query = SELECT mail_dir_path_field FROM virtual_users_table_name WHERE user_field_name='%s'</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/conf.d/10-auth.conf (other options as per your requirement)</h4>
+      <textarea rows="1" class="form-control">
+!include auth-sql.conf.ext</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/conf.d/auth-sql.conf.ext (other options as per your requirement)</h4>
+      <textarea rows="8" class="form-control">
+passdb{
+  driver = sql
+  args = /etc/dovecot/dovecot-sql.conf.ext
+}
+userdb{
+  driver = static
+  args = uid=5000 gid=5000 home=/var/mail/vmail/%d/%n
+}</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>/etc/dovecot/dovecot-sql.conf.ext</h4>
+      <textarea rows="5" class="form-control">
+driver = mysql
+connect = "host=localhost dbname=db_name user=db_user_name password=db_user_password"
+password_query = \
+  SELECT user_field_name, password_field_name  \
+  FROM virtual_users_table_name WHERE user_field_name = '%u'</textarea>
+        </div>
+      </div>
+    </div>
+  </div><hr>
+</div>
+</body>
+</html>
